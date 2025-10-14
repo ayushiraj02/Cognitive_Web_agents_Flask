@@ -207,8 +207,6 @@ def create_bot():
     return redirect(url_for('main.dashboard'))
 
 
-
-
 # from flask import Blueprint, request, redirect, url_for, flash, render_template, session, current_app
 # from threading import Thread
 # from .utils import scrape_and_create_bot
