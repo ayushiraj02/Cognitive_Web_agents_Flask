@@ -1,18 +1,25 @@
-# utils.py
 import os
 import re
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 import requests
 from dotenv import load_dotenv
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
+# LangChain modules (correct for 0.3.7)
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import TextLoader
-# langchain_community.document_loaders.TextLoader
+from langchain_huggingface.embeddings import HuggingFaceEmbeddings
+from langchain.chains.retrieval_qa.base import RetrievalQA
+
+
+
+
+
+
 
 # Load environment variables
 load_dotenv()
@@ -33,18 +40,26 @@ VECTOR_STORE_DIR, TEMP_DIR, SCRAPED_DATA_DIR = make_file()
 
 def scrape_website(base_url, client_name):
     try:
-        response = requests.get(base_url)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/119.0.0.0 Safari/537.36"}
+        session = requests.Session()
+        retry = Retry(
+            total=5,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["HEAD", "GET", "OPTIONS"]
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+
+        response = session.get(base_url, headers=headers, verify=True)
         if response.status_code != 200:
             print(f"Failed to load base URL: {base_url}")
             return []
         soup = BeautifulSoup(response.text, "html.parser")
-        soup = BeautifulSoup(response.text, "html.parser")
         links = soup.find_all('a', href=True)
-
         base_domain = urlparse(base_url).netloc
         hrefs = set()
-
-            
 
         for link in links:
             href = link['href']
@@ -56,21 +71,19 @@ def scrape_website(base_url, client_name):
 
         scraped_texts = []
         combined_text = ""
-
         client_folder = os.path.join(SCRAPED_DATA_DIR, client_name)
         os.makedirs(client_folder, exist_ok=True)
         file_path = os.path.join(client_folder, "combined_scrape.txt")
 
         for url in hrefs:
             try:
-                page_response = requests.get(url)
+                page_response = session.get(url, headers=headers, verify=True)  # ALWAYS use session + headers!
                 if page_response.status_code == 200:
                     page_soup = BeautifulSoup(page_response.text, "html.parser")
                     page_text = page_soup.get_text(separator="\n", strip=True)
-
-                combined_text += f"\n\n===== {url} =====\n\n{page_text}"
-                scraped_texts.append({'url': url, 'text': page_text})
-                print(f"Fetched: {url}")
+                    combined_text += f"\n\n===== {url} =====\n\n{page_text}"
+                    scraped_texts.append({'url': url, 'text': page_text})
+                    print(f"Fetched: {url}")
             except Exception as page_error:
                 print(f"Error fetching {url}: {page_error}")
 
@@ -79,46 +92,10 @@ def scrape_website(base_url, client_name):
         print(f"Saved combined content to: {file_path}")
 
         return scraped_texts
-    
     except Exception as e:
         print(f"Main scrape error: {e}")
         return []
-
-
-
-
-# def scrape_and_create_bot(company_url, bot_name, username, api_key,app):
-#     try:
-#         print(f"[THREAD] Scraping content from URL: {company_url}")
-#         content = scrape_website(company_url, bot_name)
-
-#         if not content:
-#             print("No content scraped.")
-#             return
-        
-#         all_text = " ".join([item['text'] for item in content])
-#         clean_text = preprocess_text(all_text)
-#         print(f"[THREAD] Cleaned text preview: {clean_text[:100]}...")
-
-#         store_vectors(clean_text, bot_name)
-
-#         app = create_app() 
-#         with app.app_context(): 
-#             # from app import db
-#             new_bot = Bot(
-#                 name=bot_name,
-#                 owner=username,
-#                 url=company_url,
-#                 apikey=api_key
-#             )
-            
-#             db.session.add(new_bot)
-#             db.session.commit()
-
-#         print(f"[THREAD] Bot created with ID: {new_bot.id}")
-
-#     except Exception as e:
-#         print(f"[THREAD] Error: {e}")
+    
 
 def preprocess_text(text):
     """Clean and preprocess text by removing unnecessary whitespaces and non-text elements."""
@@ -140,6 +117,7 @@ def text_file(filename: str, data: str) -> str:
 
 def store_vectors(text_data: str, store_name: str):
     embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    
     textfile = text_file(store_name, text_data)
     loader = TextLoader(textfile)
     docs = loader.load()
@@ -177,6 +155,8 @@ def create_qa_chain(vector_store):
     retriever=retriever,
     return_source_documents=True
     )
+
+
 
 def answer_query(store_name, question):
     vector_store = load_vectors(store_name)
