@@ -16,6 +16,10 @@ from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from langchain.chains.retrieval_qa.base import RetrievalQA
 
 
+import time
+from google.api_core.exceptions import ResourceExhausted
+
+
 
 
 
@@ -24,7 +28,7 @@ from langchain.chains.retrieval_qa.base import RetrievalQA
 # Load environment variables
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-print("GOOGLE_API_KEY:", GOOGLE_API_KEY)
+# print("GOOGLE_API_KEY:", GOOGLE_API_KEY)
 
 # Directory constants
 def make_file():
@@ -150,6 +154,7 @@ def create_qa_chain(vector_store):
     google_api_key=GOOGLE_API_KEY,
     temperature=0.2
     )
+    
     return RetrievalQA.from_chain_type(
     llm=llm,
     retriever=retriever,
@@ -165,5 +170,11 @@ def answer_query(store_name, question):
 
 def ask_rag(question: str, qa_chain):
     response = qa_chain.invoke({"query": question})
+    try:
+        response = qa_chain.invoke({"query": question})
+    except ResourceExhausted:
+        print("⚠️ Rate limit hit, waiting 5 seconds...")
+        time.sleep(5)
+        response = qa_chain.invoke({"query": question})
 
     return response["result"].strip()
