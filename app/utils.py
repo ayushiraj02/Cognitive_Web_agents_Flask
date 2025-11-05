@@ -161,12 +161,14 @@ def create_qa_chain(vector_store):
     return_source_documents=True
     )
 
-
-
 def answer_query(store_name, question):
+    if not store_exists(store_name):
+        return "This bot hasn't been trained yet. Please wait or recreate the bot."
+    
     vector_store = load_vectors(store_name)
     qa_chain = create_qa_chain(vector_store)
     return ask_rag(question, qa_chain)
+
 
 def ask_rag(question: str, qa_chain):
     response = qa_chain.invoke({"query": question})

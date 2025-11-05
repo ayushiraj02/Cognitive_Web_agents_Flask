@@ -178,61 +178,171 @@
 
 </div>
 <script>
-  document.getElementById('sendMessage').addEventListener('click', function() {
-    const userInput = document.getElementById('userInput').value.trim();
-    const apiKey = document.getElementById('botSelector').value;
+  let currentBotApiKey = document.getElementById('botSelector').value;
+  let chatHistories = {}; // Store chat history per bot
 
-    if (!userInput) {
+  // Initialize with first bot's history
+  chatHistories[currentBotApiKey] = [];
+
+  // Bot selector change event - CLEARS CHAT WHEN SWITCHING BOTS
+  document.getElementById('botSelector').addEventListener('change', function() {
+    const newBotApiKey = this.value;
+    
+    // Save current chat history (optional - remove if you don't want to save)
+    chatHistories[currentBotApiKey] = getCurrentChatMessages();
+    
+    // Switch to new bot
+    currentBotApiKey = newBotApiKey;
+    
+    // Load new bot's chat history (or initialize empty)
+    if (!chatHistories[currentBotApiKey]) {
+      chatHistories[currentBotApiKey] = [];
+    }
+    
+    // Refresh chat display - THIS CLEARS AND SHOWS NEW BOT'S CHAT
+    refreshChatDisplay();
+  });
+
+  // Send message function
+  document.getElementById('sendMessage').addEventListener('click', sendMessage);
+
+  // Allow Enter key to send message
+  document.getElementById('userInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  });
+
+  function getCurrentChatMessages() {
+    const chatMessages = document.getElementById('chatMessages');
+    const messages = [];
+    const messageElements = chatMessages.querySelectorAll('div');
+    
+    messageElements.forEach(element => {
+      messages.push({
+        html: element.outerHTML,
+        isUser: element.classList.contains('text-end')
+      });
+    });
+    
+    return messages;
+  }
+
+  function refreshChatDisplay() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.innerHTML = ''; // Clear current display
+    
+    // Load messages for current bot
+    chatHistories[currentBotApiKey].forEach(message => {
+      const messageDiv = document.createElement('div');
+      messageDiv.innerHTML = message.html;
+      chatMessages.appendChild(messageDiv);
+    });
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function sendMessage() {
+    const userInput = document.getElementById('userInput');
+    const message = userInput.value.trim();
+
+    if (!message) {
       alert("Please enter a message.");
       return;
     }
 
-    // Display user's message
+    // Display user's message immediately
     const chatMessages = document.getElementById('chatMessages');
     const userMessage = document.createElement('div');
-    userMessage.className = 'text-end mb-2';
-    userMessage.innerHTML = `<strong>You:</strong> ${userInput}`;
+    userMessage.className = 'text-end mb-2 text-primary';
+    userMessage.innerHTML = `<strong>You:</strong> ${message}`;
     chatMessages.appendChild(userMessage);
+    
+    // Add to current bot's history
+    chatHistories[currentBotApiKey].push({
+      html: userMessage.outerHTML,
+      isUser: true
+    });
+
+    // Clear input and scroll
+    userInput.value = '';
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    // Send message to backend
+    // Show typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'text-start mb-2 text-muted';
+    typingIndicator.id = 'typingIndicator';
+    typingIndicator.innerHTML = `<strong>Bot:</strong> Thinking...`;
+    chatMessages.appendChild(typingIndicator);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Send to backend
     fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query: userInput,
-        api_key: apiKey
+        query: message,
+        api_key: currentBotApiKey
       })
     })
     .then(response => response.json())
     .then(data => {
+      // Remove typing indicator
+      const typingElement = document.getElementById('typingIndicator');
+      if (typingElement) {
+        typingElement.remove();
+      }
+
+      // Display bot response
       const botMessage = document.createElement('div');
-      botMessage.className = 'text-start mb-2';
+      botMessage.className = 'text-start mb-2 text-success';
+      
       if (data.response) {
         botMessage.innerHTML = `<strong>Bot:</strong> ${data.response}`;
       } else if (data.error) {
         botMessage.innerHTML = `<strong>Error:</strong> ${data.error}`;
       } else {
-        botMessage.innerHTML = `<strong>Unexpected response.</strong>`;
+        botMessage.innerHTML = `<strong>Bot:</strong> Sorry, I couldn't process that request.`;
       }
+      
       chatMessages.appendChild(botMessage);
+      
+      // Add to current bot's history
+      chatHistories[currentBotApiKey].push({
+        html: botMessage.outerHTML,
+        isUser: false
+      });
+      
       chatMessages.scrollTop = chatMessages.scrollHeight;
     })
     .catch(error => {
       console.error('Error sending message:', error);
+      
+      // Remove typing indicator
+      const typingElement = document.getElementById('typingIndicator');
+      if (typingElement) {
+        typingElement.remove();
+      }
+      
       const errorMessage = document.createElement('div');
       errorMessage.className = 'text-start text-danger mb-2';
-      errorMessage.innerHTML = `<strong>Error sending message.</strong>`;
+      errorMessage.innerHTML = `<strong>Error:</strong> Failed to send message. Please try again.`;
       chatMessages.appendChild(errorMessage);
+      
+      chatHistories[currentBotApiKey].push({
+        html: errorMessage.outerHTML,
+        isUser: false
+      });
+      
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
+  }
 
-    // Clear input field
-    document.getElementById('userInput').value = '';
-  });
-
+  // Initialize chat display
+  refreshChatDisplay();
 </script>
-
 </body>
 </html>

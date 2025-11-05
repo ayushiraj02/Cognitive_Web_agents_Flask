@@ -398,3 +398,129 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  document.getElementById('sendMessage').addEventListener('click', function() {
+    const userInput = document.getElementById('userInput').value.trim();
+    const apiKey = document.getElementById('botSelector').value;
+
+    if (!userInput) {
+      alert("Please enter a message.");
+      return;
+    }
+
+    // Display user's message
+    const chatMessages = document.getElementById('chatMessages');
+    const userMessage = document.createElement('div');
+    userMessage.className = 'text-end mb-2';
+    userMessage.innerHTML = `<strong>You:</strong> ${userInput}`;
+    chatMessages.appendChild(userMessage);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Send message to backend
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: userInput,
+        api_key: apiKey
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      const botMessage = document.createElement('div');
+      botMessage.className = 'text-start mb-2';
+      if (data.response) {
+        botMessage.innerHTML = `<strong>Bot:</strong> ${data.response}`;
+      } else if (data.error) {
+        botMessage.innerHTML = `<strong>Error:</strong> ${data.error}`;
+      } else {
+        botMessage.innerHTML = `<strong>Unexpected response.</strong>`;
+      }
+      chatMessages.appendChild(botMessage);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    })
+    .catch(error => {
+      console.error('Error sending message:', error);
+      const errorMessage = document.createElement('div');
+      errorMessage.className = 'text-start text-danger mb-2';
+      errorMessage.innerHTML = `<strong>Error sending message.</strong>`;
+      chatMessages.appendChild(errorMessage);
+    });
+
+    // Clear input field
+    document.getElementById('userInput').value = '';
+  });
+
+</script>
+
+</body>
+</html>
