@@ -42,34 +42,6 @@ def register():
 
     return render_template('register.html')
 
-# @main_bp.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         email = request.form.get('email')
-#         password = request.form.get('password')
-#         print(f"Login attempt with email: {email}, password: {password}")
-
-#     if not email or not password:
-#         flash('Email and password are required!')
-#         return redirect(url_for('main.login'))
-
-#     user = User.query.filter_by(email=email).first()
-
-#     if not user:
-#         flash("No account found with that email. Please register first.")
-#         return redirect(url_for('main.register'))
-
-#     if not check_password_hash(user.password, password):
-#         flash('Incorrect password, please try again.')
-#         return redirect(url_for('main.login'))
-
-#         session['user_id'] = user.id
-#         session['username'] = user.username
-#         flash('Logged in successfully!')
-#         return redirect(url_for('main.dashboard'))
-
-#     return render_template('login.html')
-
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -207,61 +179,50 @@ def create_bot():
 
     return redirect(url_for('main.dashboard'))
 
-
-# from flask import Blueprint, request, redirect, url_for, flash, render_template, session, current_app
-# from threading import Thread
-# from .utils import scrape_and_create_bot
-# @main_bp.route('/create_bot', methods=['POST', 'GET'])
-# def create_bot():
-#     if request.method == 'POST':
-#         bot_name = request.form.get('bot_name')
-#         company_url = request.form.get('url')
-
-#     if 'username' not in session:
-#         print("Please log in first.")
-#         return redirect(url_for('main.login'))
-
-#     if not bot_name or not company_url:
-#         print('Bot name and URL are required!')
-#         return redirect(url_for('main.dashboard'))
-
-#     existing_bot = Bot.query.filter_by(name=bot_name, owner=session['username']).first()
-#     if existing_bot:
-#         print('A bot with this name already exists!')
-#         return redirect(url_for('main.dashboard'))
-
-#     try:
-#         api_key = secrets.token_hex(16)
-#         print(f"Generated API key: {api_key}")
-
-#         from threading import Thread
-#         from .utils import scrape_and_create_bot
-#         # Start background thread
-#         app = current_app._get_current_object()
-#         thread = Thread(target=scrape_and_create_bot, args=(company_url, bot_name, session['username'], api_key,app))
-#         thread.daemon = True  # Ensure thread exits when main program does
-#         thread.start()
-
-#         flash(f"Bot '{bot_name}' creation started! (Scraping in background, API key: {api_key})")
-
-#     except Exception as e:
-#         print(f"Error creating bot: {e}")
-#         flash("Failed to create bot. Please check the URL or try again.")
-
-#     return redirect(url_for('main.dashboard'))
-
+# ===================== EXTERNAL CHAT API (for client websites) =====================
 @main_bp.route('/api/chat', methods=['POST'])
+def external_chat_api():
+    """
+    This endpoint is called by the chatbot.js from client websites
+    """
+    data = request.json
+    print("Received EXTERNAL chat API request:", data)
+    
+    # Get API key from request (sent by chatbot.js)
+    api_key = data.get('api_key')
+    user_message = data.get('query')
+    
+    if not api_key or not user_message:
+        return jsonify({'error': 'API key and query are required.'}), 400
+    
+    try:
+        # Find the bot by API key
+        bot = Bot.query.filter_by(apikey=api_key).first()
+        if not bot:
+            return jsonify({'error': 'Invalid API key.'}), 401
+        
+        print(f"Found bot: {bot.name}, answering query from external website...")
+        
+        # Use your existing utility function to get the answer
+        response = utils.answer_query(bot.name, user_message)
+        return jsonify({'response': response})
+
+    except Exception as e:
+        print(f"Error handling external chat API request: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+    
+    
+# ===================== DASHBOARD CHAT API (for your dashboard only) =====================
+@main_bp.route('/api/dashboard_chat', methods=['POST'])  # CHANGED ROUTE
 def chat_api():
     data = request.json
-    print("Received chat API request:", data)
-    # api_key = request.headers.get('X-API-Key')
+    print("Received DASHBOARD chat API request:", data)
     api_key = data.get('api_key')
 
     if not api_key or not data or 'query' not in data:
         return jsonify({'error': 'API key and query are required.'}), 400
     
     try:
-        # bot = Bot.query.filter_by(apikey=data['api_key']).first()
         bot = Bot.query.filter_by(apikey=api_key).first()
         if not bot:
             return jsonify({'error': 'Invalid API key.'}), 401
@@ -273,7 +234,6 @@ def chat_api():
     except Exception as e:
         print(f"Error handling chat API request: {e}")
         return jsonify({'error': 'Internal server error'}), 500
-
 
 # One-time ask API endpoint
 @main_bp.route('/api/ask', methods=['POST'])
