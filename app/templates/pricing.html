@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - AI Bot Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #3498db;
+      --success-color: #27ae60;
+      --pro-color: #9b59b6;
+      --enterprise-color: #e74c3c;
+    }
+    
+    .pricing-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      padding: 80px 0;
+      margin-bottom: 40px;
+    }
+    
+    .pricing-card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .pricing-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .pricing-card.popular {
+      border: 3px solid var(--pro-color);
+      position: relative;
+    }
+    
+    .popular-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--pro-color);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .price-amount {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .price-period {
+      color: #6c757d;
+      font-size: 1rem;
+    }
+    
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .feature-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .feature-list .fa-check {
+      color: var(--success-color);
+    }
+    
+    .feature-list .fa-times {
+      color: #dc3545;
+    }
+    
+    .btn-free {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      border: none;
+      color: white;
+    }
+    
+    .btn-pro {
+      background: linear-gradient(135deg, var(--pro-color), #8e44ad);
+      border: none;
+      color: white;
+    }
+    
+    .btn-enterprise {
+      background: linear-gradient(135deg, var(--enterprise-color), #c0392b);
+      border: none;
+      color: white;
+    }
+    
+    .comparison-table th {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .faq-card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">
+        <i class="fas fa-robot text-primary me-2"></i>AI Bot Management
+      </a>
+      <div class="navbar-nav ms-auto">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+        <a href="/register" class="btn btn-primary">Register</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="pricing-header">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold mb-4">Simple, Transparent Pricing</h1>
+      <p class="lead mb-4">Choose the perfect plan for your business needs. No hidden fees, no surprises.</p>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="billing" id="monthly" checked>
+            <label class="btn btn-outline-light" for="monthly">Monthly Billing</label>
+            
+            <input type="radio" class="btn-check" name="billing" id="yearly">
+            <label class="btn btn-outline-light" for="yearly">Yearly Billing (Save 20%)</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Cards -->
+  <div class="container py-5">
+    <div class="row g-4">
+      <!-- Free Plan -->
+      <div class="col-lg-4">
+        <div class="pricing-card h-100">
+          <div class="card-body p-4 text-center">
+            <h5 class="card-title">Free</h5>
+            <p class="text-muted">Perfect for testing and small projects</p>
+            
+            <div class="my-4">
+              <span class="price-amount">$0</span>
+              <span class="price-period">/forever</span>
+            </div>
+            
+            <ul class="feature-list text-start">
+              <li><i class="fas fa-check text-success me-2"></i>3 AI Bots</li>
+              <li><i class="fas fa-check text-success me-2"></i>100 requests/hour per bot</li>
+              <li><i class="fas fa-check text-success me-2"></i>Basic chat widget</li>
+              <li><i class="fas fa-check text-success me-2"></i>Community support</li>
+              <li><i class="fas fa-times text-danger me-2"></i>Custom branding</li>
+              <li><i class="fas fa-times text-danger me-2"></i>Advanced analytics</li>
+              <li><i class="fas fa-times text-danger me-2"></i>Priority support</li>
+            </ul>
+            
+            <a href="/register" class="btn btn-free w-100 py-3 fw-bold mt-3">Get Started Free</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro Plan (Popular) -->
+      <div class="col-lg-4">
+        <div class="pricing-card popular h-100">
+          <div class="popular-badge">MOST POPULAR</div>
+          <div class="card-body p-4 text-center">
+            <h5 class="card-title">Professional</h5>
+            <p class="text-muted">Ideal for growing businesses</p>
+            
+            <div class="my-4">
+              <span class="price-amount">$19</span>
+              <span class="price-period">/month</span>
+            </div>
+            
+            <ul class="feature-list text-start">
+              <li><i class="fas fa-check text-success me-2"></i>20 AI Bots</li>
+              <li><i class="fas fa-check text-success me-2"></i>1,000 requests/hour per bot</li>
+              <li><i class="fas fa-check text-success me-2"></i>Customizable chat widget</li>
+              <li><i class="fas fa-check text-success me-2"></i>Priority email support</li>
+              <li><i class="fas fa-check text-success me-2"></i>Remove branding</li>
+              <li><i class="fas fa-check text-success me-2"></i>Advanced analytics dashboard</li>
+              <li><i class="fas fa-check text-success me-2"></i>API access</li>
+            </ul>
+            
+            <a href="/register" class="btn btn-pro w-100 py-3 fw-bold mt-3">Start 14-Day Free Trial</a>
+            <p class="text-muted small mt-2">No credit card required</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enterprise Plan -->
+      <div class="col-lg-4">
+        <div class="pricing-card h-100">
+          <div class="card-body p-4 text-center">
+            <h5 class="card-title">Enterprise</h5>
+            <p class="text-muted">For large-scale deployments</p>
+            
+            <div class="my-4">
+              <span class="price-amount">$99</span>
+              <span class="price-period">/month</span>
+            </div>
+            
+            <ul class="feature-list text-start">
+              <li><i class="fas fa-check text-success me-2"></i>Unlimited AI Bots</li>
+              <li><i class="fas fa-check text-success me-2"></i>10,000 requests/hour per bot</li>
+              <li><i class="fas fa-check text-success me-2"></i>White-label solution</li>
+              <li><i class="fas fa-check text-success me-2"></i>Dedicated support</li>
+              <li><i class="fas fa-check text-success me-2"></i>Custom training models</li>
+              <li><i class="fas fa-check text-success me-2"></i>SLA guarantee</li>
+              <li><i class="fas fa-check text-success me-2"></i>Onboarding assistance</li>
+            </ul>
+            
+            <a href="/support" class="btn btn-enterprise w-100 py-3 fw-bold mt-3">Contact Sales</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Comparison -->
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="text-center mb-5">Compare Plans</h2>
+        <div class="table-responsive">
+          <table class="table table-bordered comparison-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th class="text-center">Free</th>
+                <th class="text-center">Professional</th>
+                <th class="text-center">Enterprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Number of Bots</td>
+                <td class="text-center">3</td>
+                <td class="text-center">20</td>
+                <td class="text-center">Unlimited</td>
+              </tr>
+              <tr>
+                <td>Requests per Hour</td>
+                <td class="text-center">100</td>
+                <td class="text-center">1,000</td>
+                <td class="text-center">10,000</td>
+              </tr>
+              <tr>
+                <td>Custom Branding</td>
+                <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                <td class="text-center"><i class="fas fa-check text-success"></i></td>
+              </tr>
+              <tr>
+                <td>Analytics Dashboard</td>
+                <td class="text-center">Basic</td>
+                <td class="text-center">Advanced</td>
+                <td class="text-center">Enterprise</td>
+              </tr>
+              <tr>
+                <td>Support</td>
+                <td class="text-center">Community</td>
+                <td class="text-center">Priority Email</td>
+                <td class="text-center">Dedicated</td>
+              </tr>
+              <tr>
+                <td>SLA Guarantee</td>
+                <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                <td class="text-center">99.5%</td>
+                <td class="text-center">99.9%</td>
+              </tr>
+              <tr>
+                <td>Training Data Limit</td>
+                <td class="text-center">10MB</td>
+                <td class="text-center">100MB</td>
+                <td class="text-center">Unlimited</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="bg-light py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+          
+          <div class="accordion" id="pricingFAQ">
+            <!-- FAQ 1 -->
+            <div class="accordion-item faq-card mb-3">
+              <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                  Can I switch plans later?
+                </button>
+              </h2>
+              <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#pricingFAQ">
+                <div class="accordion-body">
+                  Yes! You can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to new features. When downgrading, changes take effect at the end of your billing cycle.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="accordion-item faq-card mb-3">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                  Is there a free trial for paid plans?
+                </button>
+              </h2>
+              <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+                <div class="accordion-body">
+                  Absolutely! The Professional plan comes with a 14-day free trial. No credit card required to start. The Enterprise plan includes a custom demo and proof-of-concept period.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="accordion-item faq-card mb-3">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                  What happens if I exceed my request limits?
+                </button>
+              </h2>
+              <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+                <div class="accordion-body">
+                  If you exceed your hourly request limit, additional requests will be queued and processed when capacity becomes available. We'll notify you if you're consistently hitting limits so you can consider upgrading.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="accordion-item faq-card mb-3">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                  Do you offer discounts for nonprofits?
+                </button>
+              </h2>
+              <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+                <div class="accordion-body">
+                  Yes! We offer a 50% discount on all paid plans for registered nonprofit organizations. Contact our support team with your nonprofit registration details to get started.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ 5 -->
+            <div class="accordion-item faq-card mb-3">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                  What payment methods do you accept?
+                </button>
+              </h2>
+              <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#pricingFAQ">
+                <div class="accordion-body">
+                  We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and for Enterprise plans we also support bank transfers and annual invoicing.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <h2 class="mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">Join thousands of businesses using our AI chatbot platform to enhance customer experience and automate support.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="/register" class="btn btn-primary btn-lg px-5">Start Free Today</a>
+          <a href="/documentation" class="btn btn-outline-primary btn-lg px-5">View Documentation</a>
+        </div>
+        <p class="text-muted mt-3">No credit card required • 14-day free trial • Setup in 5 minutes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h5><i class="fas fa-robot me-2"></i>AI Bot Management</h5>
+          <p class="mt-3">Professional chatbot management platform for businesses of all sizes.</p>
+        </div>
+        <div class="col-md-3">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="/login" class="text-light">Login</a></li>
+            <li><a href="/register" class="text-light">Register</a></li>
+            <li><a href="/documentation" class="text-light">Documentation</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3">
+          <h5>Support</h5>
+          <ul class="list-unstyled">
+            <li><a href="/support" class="text-light">Contact Us</a></li>
+            <li><a href="/help-center" class="text-light">Help Center</a></li>
+            <li><a href="/api-reference" class="text-light">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr class="my-4 bg-light">
+      <div class="text-center">
+        <p class="mb-0">&copy; 2023 AI Bot Management Platform. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Simple billing toggle effect
+    document.addEventListener('DOMContentLoaded', function() {
+      const monthly = document.getElementById('monthly');
+      const yearly = document.getElementById('yearly');
+      const proPrice = document.querySelector('.pricing-card.popular .price-amount');
+      const enterprisePrice = document.querySelector('.pricing-card:last-child .price-amount');
+      
+      yearly.addEventListener('change', function() {
+        if (this.checked) {
+          proPrice.textContent = '$15';
+          enterprisePrice.textContent = '$79';
+          document.querySelector('.pricing-card.popular .price-period').innerHTML = '/month<br><small class="text-success">Billed annually</small>';
+          document.querySelector('.pricing-card:last-child .price-period').innerHTML = '/month<br><small class="text-success">Billed annually</small>';
+        }
+      });
+      
+      monthly.addEventListener('change', function() {
+        if (this.checked) {
+          proPrice.textContent = '$19';
+          enterprisePrice.textContent = '$99';
+          document.querySelector('.pricing-card.popular .price-period').textContent = '/month';
+          document.querySelector('.pricing-card:last-child .price-period').textContent = '/month';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation - AI Bot Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #3498db;
+    }
+    .doc-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      padding: 60px 0;
+      margin-bottom: 40px;
+    }
+    .card {
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    pre {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      border-left: 4px solid var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation (same as your main site) -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">
+        <i class="fas fa-robot text-primary me-2"></i>AI Bot Management
+      </a>
+      <div class="navbar-nav ms-auto">
+        <a href="/" class="nav-link">Home</a>
+        <div id="status"></div>
+        <a href="/login" class="btn btn-outline-primary me-2">Login</a>
+        <a href="/register" class="btn btn-primary">Register</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="doc-header">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold">📖 Documentation</h1>
+      <p class="lead">Everything you need to know to get started with AI Bot Management</p>
+    </div>
+  </div>
+
+  <div class="container py-5">
+    <div class="row">
+      <!-- Quick Start -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">🚀 Quick Start Guide</h5>
+            <p class="card-text">Get your first chatbot running in 5 minutes:</p>
+            <ol>
+              <li>Create account & login</li>
+              <li>Create a new bot with your website URL</li>
+              <li>Copy the integration script</li>
+              <li>Paste into your website's HTML</li>
+              <li>Your chatbot is live! 🎉</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- Integration Guide -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">🔧 Integration Guide</h5>
+            <p><strong>Step 1:</strong> Get your API Key from dashboard</p>
+            <p><strong>Step 2:</strong> Add this script before closing <code>&lt;/body&gt;</code> tag:</p>
+            <pre><code>&lt;script&gt;
+  (function() {
+    var botApiKey = "YOUR_API_KEY_HERE";
+    var chatWidget = document.createElement("div");
+    chatWidget.id = "my-chatbot";
+    document.body.appendChild(chatWidget);
+    
+    var script = document.createElement("script");
+    script.src = "{{ request.host_url }}static/js/chatbot.js?apikey=" + botApiKey;
+    document.body.appendChild(script);
+  })();
+&lt;/script&gt;
+</code>
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Best Practices -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">💡 Best Practices</h5>
+            <ul>
+              <li>Use clear, descriptive bot names</li>
+              <li>Choose websites with good content for training</li>
+              <li>Test your bot thoroughly before going live</li>
+              <li>Place chat widget on all important pages</li>
+              <li>Monitor bot performance regularly</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">❓ Frequently Asked Questions</h5>
+            <p><strong>Q: How long does training take?</strong><br>
+            A: Usually 1-2 minutes depending on website size</p>
+            
+            <p><strong>Q: Can I use multiple bots on one website?</strong><br>
+            A: Yes! Each has its own API key</p>
+            
+            <p><strong>Q: Is there a rate limit?</strong><br>
+            A: Free tier: 100 requests/hour per bot</p>
+            
+            <p><strong>Q: What websites work best?</strong><br>
+            A: Sites with clear text content (blogs, documentation, FAQs)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (same as your main site) -->
+  <footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+      <p>&copy; 2023 AI Bot Management Platform. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+  </script>
+</body>
+</html>
