@@ -84,7 +84,6 @@ def logout():
 
 @main_bp.route('/dashboard')
 def dashboard():
-    # print("Session data:", session)
 
     if 'username' not in session:
         print("Please log in first.")
@@ -269,3 +268,53 @@ def delete_bots():
     db.session.commit()
     flash(f'Successfully deleted {len(bots_to_delete)} bot(s).', 'success')
     return redirect(url_for('main.dashboard'))
+
+
+@main_bp.route('/documentation')
+def documentation():
+    print("Session data:", session)
+
+    # print("user in documentation:", username)
+  
+    return render_template('documentation.html', user_id=session['user_id'],
+    username=session['username'],session=session)
+
+
+@main_bp.route('/support', methods=['GET', 'POST'])
+def support():
+    """Support contact page"""
+    if request.method == 'POST':
+        # Handle support form submission
+        name = request.form.get('name')
+        email = request.form.get('email')
+        subject = request.form.get('subject')
+        message = request.form.get('message')
+        
+        # Here you can:
+        # 1. Save to database
+        # 2. Send email notification
+        # 3. Integrate with support ticket system
+        
+        print(f"Support request from {name} ({email}): {subject}")
+        print(f"Message: {message}")
+        
+        # For now, just show success message
+        flash('Thank you for your message! We will get back to you within 24 hours.', 'success')
+        return redirect(url_for('main.support'))
+    
+    return render_template('support.html')
+
+@main_bp.route('/helpcenter')
+def help_center():
+    """Help center with FAQs and tutorials"""
+    return render_template('help-center.html')
+
+@main_bp.route('/apireference')
+def api_reference():
+    """API documentation page"""
+    return render_template('api-reference.html')
+
+@main_bp.route('/pricing')
+def pricing():
+    """Pricing page"""
+    return render_template('pricing.html')
