@@ -1,15 +1,17 @@
 # routes.py
+from py_compile import main
 from app import db
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Blueprint, app, make_response, render_template, request, redirect, url_for, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from transformers import pipeline
-import os
 import secrets
+from app.decorator import login_required
 from . import utils 
 from .utils import preprocess_text, store_vectors
 from .models import Bot, User
-from flask import Blueprint, render_template, request, redirect, url_for,  session, jsonify
 from . import db, utils
+
+
 
 
 main_bp = Blueprint('main', __name__)
@@ -76,14 +78,34 @@ def login():
 
 
 @main_bp.route('/logout')
+@login_required
 def logout():
     session.clear()
+    response = redirect(url_for("main.login"))
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    # return response
     print('Logged out successfully.')
-    return redirect(url_for('main.login'))
+    return redirect(url_for('main.dashboard'))
+
+# @main.route('/logout')
+# def logout():
+#     session.clear()
+#     res = make_response(redirect(url_for('main.login')))
+    
+#     res.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+#     res.headers["Pragma"] = "no-cache"
+#     res.headers["Expires"] = "0"
+
+#     return res
 
 
 @main_bp.route('/dashboard')
+@login_required
 def dashboard():
+    if "user_id" not in session:
+        return redirect(url_for("main.login"))
 
     if 'username' not in session:
         print("Please log in first.")
@@ -100,6 +122,7 @@ def dashboard():
     url=url,
     api_key=api_key
     )
+
 
 
 @main_bp.route('/create_bot', methods=['POST', 'GET'])
@@ -273,11 +296,14 @@ def delete_bots():
 @main_bp.route('/documentation')
 def documentation():
     print("Session data:", session)
+    logged_in = "user_id" in session
+    username = session.get('username', 'Guest')
+    print("Logged in status:", logged_in)
 
     # print("user in documentation:", username)
   
-    return render_template('documentation.html', user_id=session['user_id'],
-    username=session['username'],session=session)
+    return render_template('documentation.html',logged_in=logged_in)
+
 
 
 @main_bp.route('/support', methods=['GET', 'POST'])
@@ -318,3 +344,4 @@ def api_reference():
 def pricing():
     """Pricing page"""
     return render_template('pricing.html')
+
