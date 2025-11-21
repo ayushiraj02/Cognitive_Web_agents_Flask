@@ -103,6 +103,8 @@ def logout():
 
 @main_bp.route('/dashboard')
 @login_required
+@nocache
+
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("main.login"))
