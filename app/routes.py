@@ -5,7 +5,8 @@ from flask import Blueprint, app, make_response, render_template, request, redir
 from werkzeug.security import generate_password_hash, check_password_hash
 from transformers import pipeline
 import secrets
-from app.decorator import login_required
+from app.decorator import login_required, nocache
+import os
 from . import utils 
 from .utils import preprocess_text, store_vectors
 from .models import Bot, User
@@ -101,10 +102,9 @@ def logout():
 #     return res
 
 
-@main_bp.route('/dashboard')
 @login_required
 @nocache
-
+@main_bp.route('/dashboard')
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("main.login"))
