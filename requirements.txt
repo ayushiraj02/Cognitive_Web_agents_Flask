@@ -8,6 +8,7 @@ requests
 beautifulsoup4
 langchain
 langchain-community
+langchain-core
 langchain-google-genai
 langchain-text-splitters
 langgraph
